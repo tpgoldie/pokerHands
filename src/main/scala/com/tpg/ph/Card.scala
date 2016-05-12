@@ -2,6 +2,21 @@ package com.tpg.ph
 
 case class Card(val value: CardValue, val suit: Suit) {
   def >(that: Card): Boolean = this.value > that.value
+  def <(that: Card): Boolean = this.value < that.value
+
+  def canEqual(obj: Any): Boolean = obj.isInstanceOf[Card]
+
+  override def equals(that: Any): Boolean = that match {
+    case that: Card => that.canEqual(this) && this.hashCode == that.hashCode
+    case _ => false
+  }
+
+  override def hashCode: Int = {
+    val prime = 31
+
+    prime + value.value
+//    prime * result + suit.hashCode
+  }
 
   override def toString: String = s"${value} ${suit}"
 }
