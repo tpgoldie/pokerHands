@@ -3,7 +3,7 @@ package com.tpg.ph
 import org.scalatest.{FunSpec, Matchers}
 
 class PokerHandSpec extends FunSpec with Matchers {
-  describe("A hand") {
+  describe("A poker hand") {
     describe("highest valued card") {
       val hand: Hand = PokerHand(Card(Nine, Hearts), Card(Two, Hearts), Card(Seven, Diamonds), Card(Four, Spades),
         Card(Three, Diamonds)).get
@@ -30,6 +30,20 @@ class PokerHandSpec extends FunSpec with Matchers {
 
       it("should give nothing for out of range index 5") {
         hand.highestValuedCard(5) should be(None)
+      }
+    }
+
+    describe("construction") {
+      it("can construct a straight flush poker hand") {
+        val hand = PokerHand(Card(Two, Hearts), Card(Three, Hearts), Card(Four, Hearts), Card(Five, Hearts), Card(Six, Hearts))
+
+        hand map { h => h.isInstanceOf[StraightFlush] should be(true) }
+      }
+
+      it("can construct a high card poker hand") {
+        val hand = PokerHand(Card(Two, Hearts), Card(Three, Diamonds), Card(Four, Hearts), Card(Five, Spades), Card(Six, Hearts))
+
+        hand map { h => h.isInstanceOf[HighCard] should be(true) }
       }
     }
   }
