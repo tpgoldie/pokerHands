@@ -1,5 +1,6 @@
 package com.tpg.ph
 
+import com.tpg.ph.FourOfAKind.isFourOfAKind
 import com.tpg.ph.StraightFlush.isStraightFlush
 
 import scala.annotation.tailrec
@@ -15,7 +16,14 @@ object PokerHand {
     val hand1 = StraightFlush(cards)
 
     hand1.isEmpty match {
-      case true => HighCard(cards)
+      case true => {
+        val hand2 = FourOfAKind(cards)
+        hand2.isEmpty match {
+          case true => HighCard(cards)
+          case false => hand2
+        }
+      }
+
       case false => hand1
     }
   }
@@ -72,6 +80,56 @@ object StraightFlush {
       }
     }
   }
+}
+
+
+case class FourOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card)
+  extends PokerHand(card1, card2, card3, card4, card5) {
+
+  override def >(that: Hand): Boolean = {
+    val A = this.cards.sortWith(_ > _)
+    val B = that.cards.sortWith(_ > _)
+
+    A.head > B.head
+  }
+
+  override def rank(that: PokerHand): Option[PokerHand] = {
+    isFourOfAKind(that.cards) match {
+      case true => {
+        this > that match {
+          case true => Option(this)
+          case false => {
+            that > this match {
+              case true => Option(that)
+              case false => None
+            }
+          }
+        }
+      }
+
+      case false => that.rank(this)
+    }
+  }
+
+  def highestValuedCard: Option[Card] = {
+    val groupedBy = cards.groupBy(c => c.value)
+    groupedBy.filter(p => p._2.size == 4).last._2.headOption
+  }
+}
+
+object FourOfAKind {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
+    val groupByValue = cards.groupBy(c => c.value)
+
+    val exists = groupByValue.size == 2 && groupByValue.exists(p => p._2.size == 4)
+
+    exists match {
+      case true => Option(new FourOfAKind(cards.head, cards(1), cards(2), cards(3), cards(4)))
+      case false => HighCard(cards)
+    }
+  }
+
+  def isFourOfAKind(cards: Seq[Card]): Boolean = cards.groupBy(c => c.value).exists(p => p._2.size == 4)
 }
 
 

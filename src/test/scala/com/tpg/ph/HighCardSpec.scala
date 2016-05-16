@@ -1,9 +1,6 @@
 package com.tpg.ph
 
-import com.tpg.ph.ranking.Rank
-import org.scalatest.{FunSpec, Matchers}
-
-class HighCardSpec extends FunSpec with Matchers {
+class HighCardSpec extends HandSpec {
   describe("A high card ranking") {
     describe("ranks hands which do not fit any higher category") {
       describe("by the value of their highest card") {

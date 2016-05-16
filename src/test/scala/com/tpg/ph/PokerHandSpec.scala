@@ -1,8 +1,6 @@
 package com.tpg.ph
 
-import org.scalatest.{FunSpec, Matchers}
-
-class PokerHandSpec extends FunSpec with Matchers {
+class PokerHandSpec extends HandSpec {
   describe("A poker hand") {
     describe("highest valued card") {
       val hand: Hand = PokerHand(Card(Nine, Hearts), Card(Two, Hearts), Card(Seven, Diamonds), Card(Four, Spades),
