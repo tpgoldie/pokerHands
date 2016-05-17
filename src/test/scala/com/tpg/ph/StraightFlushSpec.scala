@@ -14,7 +14,7 @@ class StraightFlushSpec extends HandSpec {
       assertRanking(A, B, B)
     }
 
-    it("ranks a straight flush poker hand higher than a high card poker hand") {
+    it("ranks a straight flush hand higher than a high card hand") {
       val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
       val B: Option[PokerHand] = HighCard(Seq(Four, Five, Ten, Seven, Eight) map {value => Card(value, Diamonds) })
 
