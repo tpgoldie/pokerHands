@@ -1,7 +1,7 @@
 package com.tpg.ph
 
 class FullHouseSpec extends HandSpec {
-  describe("three of a kind") {
+  describe("full house") {
     val cards1 = Seq(Hearts, Diamonds, Spades) map { value => Card(Two, value) }
     val cards2 = Seq(Diamonds, Clubs) map { value => Card(Three, value) }
 

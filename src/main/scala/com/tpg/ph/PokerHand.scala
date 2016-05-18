@@ -2,7 +2,7 @@ package com.tpg.ph
 
 import com.tpg.ph.FourOfAKind.isFourOfAKind
 import com.tpg.ph.StraightFlush.isStraightFlush
-import com.tpg.ph.FullHouse.isThreeOfAKind
+import com.tpg.ph.FullHouse.isFullHouse
 
 import scala.annotation.tailrec
 
@@ -14,13 +14,20 @@ sealed abstract class PokerHand(card1: Card, card2: Card, card3: Card, card4: Ca
 object PokerHand {
   def apply(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card): Option[PokerHand] = {
     val cards = Seq(card1, card2, card3, card4, card5)
-    val hand1 = StraightFlush(cards)
 
+    val hand1 = StraightFlush(cards)
     hand1.isEmpty match {
       case true => {
         val hand2 = FourOfAKind(cards)
         hand2.isEmpty match {
-          case true => HighCard(cards)
+          case true => {
+            val hand3 = FullHouse(cards)
+            hand3.isEmpty match {
+              case true => Flush(cards)
+              case false => HighCard(cards)
+            }
+          }
+
           case false => hand2
         }
       }
@@ -160,7 +167,7 @@ case class FullHouse(card1: Card, card2: Card, card3: Card, card4: Card, card5: 
   private val cards2 = groupedBy.values.toSeq(1)
 
   override def rank(that: PokerHand): Option[PokerHand] = {
-    isThreeOfAKind(that.cards) match {
+    isFullHouse(that.cards) match {
       case true => {
         val x = this
         val y: FullHouse = that.asInstanceOf[FullHouse]
@@ -190,7 +197,7 @@ object FullHouse {
   }
 
   def apply(cards1: Seq[Card], cards2: Seq[Card]) : Option[PokerHand] = {
-    isThreeOfAKind(cards1 ++ cards2) match {
+    isFullHouse(cards1 ++ cards2) match {
       case true => {
         val seqs = Seq(cards1, cards2).sortWith(_.size < _.size)
         Option(new FullHouse(seqs.head(0), seqs.head(1), seqs.last(0), seqs.last(1), seqs.last(2)))
@@ -200,7 +207,7 @@ object FullHouse {
     }
   }
 
-  def isThreeOfAKind(cards: Seq[Card]): Boolean = {
+  def isFullHouse(cards: Seq[Card]): Boolean = {
     val groupedBy = cards.groupBy(c => c.value.value)
 
     groupedBy.size == 2 match {
@@ -217,6 +224,30 @@ object FullHouse {
     }
   }
 }
+
+
+case class Flush(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card)
+  extends PokerHand(card1, card2, card3, card4, card5) {
+  override def rank(that: PokerHand): Option[PokerHand] = {
+    that match {
+      case a: FullHouse => Option(a)
+      case b: FourOfAKind => Option(b)
+      case _ => None
+    }
+  }
+}
+
+object Flush {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
+    isFlush(cards) match {
+      case true => Option(Flush(cards.head, cards(1), cards(2), cards(3), cards(4)))
+      case false => HighCard(cards)
+    }
+  }
+
+  def isFlush(cards: Seq[Card]): Boolean = cards.groupBy(c => c.suit).size == 1
+}
+
 
 case class HighCard(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
   override def rank(that: PokerHand): Option[PokerHand] = {
