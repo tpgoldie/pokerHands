@@ -15,7 +15,7 @@ class HighestValuedCardMappingSpec extends FunSpec with Matchers {
     }
 
     describe("gives the next highest valued card for index 2") {
-      mapping.highestValuedCard(1) should be(HighestValuedCard(2, Option(Card(Ten, Hearts))))
+      mapping.highestValuedCard(2) should be(HighestValuedCard(3, Option(Card(Five, Diamonds))))
     }
   }
 }
