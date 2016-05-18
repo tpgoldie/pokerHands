@@ -12,27 +12,39 @@ sealed abstract class PokerHand(card1: Card, card2: Card, card3: Card, card4: Ca
 }
 
 object PokerHand {
+  def apply(cards: Seq[Card]): Option[PokerHand] = apply(cards(0), cards(1), cards(2), cards(3), cards(4))
+
   def apply(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card): Option[PokerHand] = {
     val cards = Seq(card1, card2, card3, card4, card5)
 
     val hand1 = StraightFlush(cards)
-    hand1.isEmpty match {
-      case true => {
+    hand1 match {
+      case Some(a) => hand1
+      case None => {
         val hand2 = FourOfAKind(cards)
-        hand2.isEmpty match {
-          case true => {
+        hand2 match {
+          case Some(b) => hand2
+          case None => {
             val hand3 = FullHouse(cards)
-            hand3.isEmpty match {
-              case true => Flush(cards)
-              case false => HighCard(cards)
+            hand3 match {
+              case Some(c) => hand3
+              case None => {
+                val hand4 = Flush(cards)
+                hand4 match {
+                  case Some(d) => hand4
+                  case None => {
+                    val hand5 = Straight(cards)
+                    hand5 match {
+                      case Some(e) => hand5
+                      case None => HighCard(cards)
+                    }
+                  }
+                }
+              }
             }
           }
-
-          case false => hand2
         }
       }
-
-      case false => hand1
     }
   }
 }
@@ -76,17 +88,8 @@ object StraightFlush {
   }
 
   def isStraightFlush(cards: Seq[Card]): Boolean = {
-    cards.isEmpty match {
-      case true => false
-      case false => {
-        val suit = cards.head.suit
-        val count = cards.count(c => c.suit == suit)
-        val sortedCards = cards.sortWith(_.value < _.value)
-        val range = sortedCards.head.value to sortedCards.last.value
-
-        count == 5 && range == sortedCards.map {c => c.value}
-      }
-    }
+    val value = Cards(cards)
+    value.sameSuits && value.isSequential
   }
 }
 
@@ -246,6 +249,25 @@ object Flush {
   }
 
   def isFlush(cards: Seq[Card]): Boolean = cards.groupBy(c => c.suit).size == 1
+}
+
+
+case class Straight(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
+  override def rank(that: PokerHand): Option[PokerHand] = ???
+}
+
+object Straight {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
+    isStraight(cards) match {
+      case true => Option(Straight(cards.head, cards(1), cards(2), cards(3), cards(4)))
+      case false => HighCard(cards)
+    }
+  }
+
+  def isStraight(cards: Seq[Card]): Boolean = {
+    val value = Cards(cards)
+    value.isSequential && !value.sameSuits
+  }
 }
 
 

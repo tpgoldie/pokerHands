@@ -6,7 +6,7 @@ class FlushSpec extends HandSpec {
     val cards = values map { v => Card(v, Hearts) }
 
     it("contains 5 cards of the same suit") {
-      val hand = PokerHand(cards.head, cards(1), cards(2), cards(3), cards(4))
+      val hand = PokerHand(cards(0), cards(1), cards(2), cards(3), cards(4))
       hand map { h => h.isInstanceOf[Flush] should be(true) }
     }
 
