@@ -19,26 +19,6 @@ sealed abstract class Rank(handA: Option[Hand], handB: Option[Hand]) {
 
 case class HighCard(handA: Option[Hand], handB: Option[Hand]) extends Rank(handA, handB) {
   override protected def calculateRank(handA: Hand, handB: Hand): Option[Hand] = {
-//    val highestValueCard => Option[Hand] = (hand1: Hand, hand2: Hand, index: Int) => {
-//      index == 6 match {
-//        case true => None
-//        case false => {
-//          handA.highestValuedCard(index) == handB.highestValuedCard(index) match {
-//            case true => highestValueCard(handA, handB, index+1)
-//            case false => {
-//              val mapping = Map(
-//                handA.highestValuedCard(index).index -> handA,
-//                handB.highestValuedCard(index).index -> handB
-//              )
-//
-//              val hvc = mapping.values.map(v => v.highestValuedCard(index)).toSeq.sortWith(_ > _)(0)
-//              Option(mapping(hvc.index))
-//            }
-//          }
-//        }
-//      }
-//    }
-
     handA.cards.size == handB.cards.size match {
       case true => highestValueCard(handA, handB, 0)
       case false => None
@@ -52,7 +32,7 @@ case class HighCard(handA: Option[Hand], handB: Option[Hand]) extends Rank(handA
       case false => {
         handA.highestValuedCard(index) == handB.highestValuedCard(index) match {
           case true => highestValueCard(handA, handB, index+1)
-          case false => Option(Seq(handA, handB).sortWith(_.highestValuedCard(index).get > _.highestValuedCard(index).get)(0))
+          case false => Option(Seq(handA, handB).sortWith(_.highestValuedCard(index).get > _.highestValuedCard(index).get).head)
         }
       }
     }
