@@ -30,19 +30,5 @@ class PokerHandSpec extends HandSpec {
         hand.highestValuedCard(5) should be(None)
       }
     }
-
-    describe("construction") {
-      it("can construct a straight flush poker hand") {
-        val hand = PokerHand(Card(Two, Hearts), Card(Three, Hearts), Card(Four, Hearts), Card(Five, Hearts), Card(Six, Hearts))
-
-        hand map { h => h.isInstanceOf[StraightFlush] should be(true) }
-      }
-
-      it("can construct a high card poker hand") {
-        val hand = PokerHand(Card(Two, Hearts), Card(Three, Diamonds), Card(Four, Hearts), Card(Five, Spades), Card(Six, Hearts))
-
-        hand map { h => h.isInstanceOf[HighCard] should be(true) }
-      }
-    }
   }
 }

@@ -31,7 +31,7 @@ class FlushSpec extends HandSpec {
       val cards2 = Seq(Diamonds, Clubs) map { value => Card(Three, value) }
 
       val A: Option[PokerHand] = Flush(cards)
-      val B: Option[PokerHand] = FullHouse(cards1, cards2)
+      val B: Option[PokerHand] = FullHouse(cards1 ++ cards2)
 
       assertRanking(A, B, B)
     }

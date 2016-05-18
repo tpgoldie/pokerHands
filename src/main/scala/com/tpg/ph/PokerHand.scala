@@ -17,35 +17,35 @@ object PokerHand {
   def apply(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card): Option[PokerHand] = {
     val cards = Seq(card1, card2, card3, card4, card5)
 
-    val hand1 = StraightFlush(cards)
-    hand1 match {
-      case Some(a) => hand1
-      case None => {
-        val hand2 = FourOfAKind(cards)
-        hand2 match {
-          case Some(b) => hand2
-          case None => {
-            val hand3 = FullHouse(cards)
-            hand3 match {
-              case Some(c) => hand3
-              case None => {
-                val hand4 = Flush(cards)
-                hand4 match {
-                  case Some(d) => hand4
-                  case None => {
-                    val hand5 = Straight(cards)
-                    hand5 match {
-                      case Some(e) => hand5
-                      case None => HighCard(cards)
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    StraightFlush(cards)
+//    hand1 match {
+//      case Some(a) => hand1
+//      case None => {
+//        val hand2 = FourOfAKind(cards)
+//        hand2 match {
+//          case Some(b) => hand2
+//          case None => {
+//            val hand3 = FullHouse(cards)
+//            hand3 match {
+//              case Some(c) => hand3
+//              case None => {
+//                val hand4 = Flush(cards)
+//                hand4 match {
+//                  case Some(d) => hand4
+//                  case None => {
+//                    val hand5 = Straight(cards)
+//                    hand5 match {
+//                      case Some(e) => hand5
+//                      case None => HighCard(cards)
+//                    }
+//                  }
+//                }
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
   }
 }
 
@@ -80,10 +80,10 @@ case class StraightFlush(card1: Card, card2: Card, card3: Card, card4: Card, car
 }
 
 object StraightFlush {
-  def apply(cards: Seq[Card]): Option[StraightFlush] = {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
     isStraightFlush(cards) match {
-      case true => Option(new StraightFlush(cards.head, cards(1), cards(2), cards(3), cards(4)))
-      case false => None
+      case true => Option(StraightFlush(cards.head, cards(1), cards(2), cards(3), cards(4)))
+      case false => FourOfAKind(cards)
     }
   }
 
@@ -150,17 +150,16 @@ case class FourOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card5
 
 object FourOfAKind {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
-    val groupByValue = cards.groupBy(c => c.value)
-
-    val exists = groupByValue.size == 2 && groupByValue.exists(p => p._2.size == 4)
-
-    exists match {
-      case true => Option(new FourOfAKind(cards.head, cards(1), cards(2), cards(3), cards(4)))
+    isFourOfAKind(cards) match {
+      case true => Option(FourOfAKind(cards.head, cards(1), cards(2), cards(3), cards(4)))
       case false => FullHouse(cards)
     }
   }
 
-  def isFourOfAKind(cards: Seq[Card]): Boolean = cards.groupBy(c => c.value).exists(p => p._2.size == 4)
+  def isFourOfAKind(cards: Seq[Card]): Boolean = {
+    val groupByValue = cards.groupBy(c => c.value)
+    groupByValue.size ==2 && groupByValue.exists(p => p._2.size == 4)
+  }
 }
 
 
@@ -193,20 +192,9 @@ case class FullHouse(card1: Card, card2: Card, card3: Card, card4: Card, card5: 
 
 object FullHouse {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
-    val groupedBy = cards.groupBy(c => c.value.value)
-    val sorted = groupedBy.values.toSeq.sortWith(_.size < _.size)
-
-    apply(sorted(0), sorted(1))
-  }
-
-  def apply(cards1: Seq[Card], cards2: Seq[Card]) : Option[PokerHand] = {
-    isFullHouse(cards1 ++ cards2) match {
-      case true => {
-        val seqs = Seq(cards1, cards2).sortWith(_.size < _.size)
-        Option(new FullHouse(seqs.head(0), seqs.head(1), seqs.last(0), seqs.last(1), seqs.last(2)))
-      }
-
-      case false => HighCard(cards1 ++ cards2)
+    isFullHouse(cards) match {
+      case true => Option(FullHouse(cards(0), cards(1), cards(2), cards(3), cards(4)))
+      case false => Flush(cards)
     }
   }
 
@@ -243,8 +231,8 @@ case class Flush(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card
 object Flush {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
     isFlush(cards) match {
-      case true => Option(Flush(cards.head, cards(1), cards(2), cards(3), cards(4)))
-      case false => HighCard(cards)
+      case true => Option(Flush(cards(0), cards(1), cards(2), cards(3), cards(4)))
+      case false => Straight(cards)
     }
   }
 
@@ -259,7 +247,7 @@ case class Straight(card1: Card, card2: Card, card3: Card, card4: Card, card5: C
 object Straight {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
     isStraight(cards) match {
-      case true => Option(Straight(cards.head, cards(1), cards(2), cards(3), cards(4)))
+      case true => Option(Straight(cards(0), cards(1), cards(2), cards(3), cards(4)))
       case false => HighCard(cards)
     }
   }
