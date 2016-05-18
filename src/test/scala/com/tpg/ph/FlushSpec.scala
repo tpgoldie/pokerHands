@@ -13,8 +13,7 @@ class FlushSpec extends HandSpec {
     it("ranks lower than a straight flush") {
       val A: Option[PokerHand] = Flush(cards)
       val range = Two to Six
-      val B: Option[PokerHand] = StraightFlush(range map(cv => Card(cv, Hearts))
-        ++ Seq(Card(Three, Hearts)))
+      val B: Option[PokerHand] = StraightFlush(range map { cv => Card(cv, Hearts)})
 
       assertRanking(A, B, B)
     }
