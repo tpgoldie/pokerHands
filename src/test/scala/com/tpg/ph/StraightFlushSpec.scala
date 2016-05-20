@@ -14,7 +14,23 @@ class StraightFlushSpec extends HandSpec {
       assertRanking(A, B, B)
     }
 
-    it("ranks a straight flush hand higher than a high card hand") {
+    it("ranks higher than a four of a kind") {
+      val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
+      val B: Option[PokerHand] = FourOfAKind(Seq(Hearts, Clubs, Diamonds, Spades).map(suit => Card(Four, suit))
+        ++ Seq(Card(Seven, Diamonds)))
+
+      assertRanking(A, B, A)
+    }
+
+    it("ranks higher than a full house") {
+      val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
+      val B: Option[PokerHand] = FullHouse(Seq(Hearts, Clubs, Diamonds, Spades).map(suit => Card(Four, suit))
+        ++ Seq(Card(Seven, Diamonds)))
+
+      assertRanking(A, B, A)
+    }
+
+    it("ranks higher than a high card hand") {
       val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
       val B: Option[PokerHand] = HighCard(Seq(Four, Five, Ten, Seven, Eight) map {value => Card(value, Diamonds) })
 
@@ -24,7 +40,7 @@ class StraightFlushSpec extends HandSpec {
     it("ranks straight flushes with the same hand as undetermined") {
       val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
 
-      assertRanking(A, A, None)
+      assertUndefined(A, A)
     }
   }
 }

@@ -25,7 +25,7 @@ class FourOfAKindSpec extends HandSpec {
     it("rank undefined if the value of the 4 cards are the same") {
       val A: Option[PokerHand] = FourOfAKind(suits.map(value => Card(Two, value)) ++ Seq(Card(Five, Diamonds)))
 
-      assertRanking(A, A, None)
+      assertUndefined(A, A)
     }
 
     it("ranks lower than a straight flush") {

@@ -164,26 +164,23 @@ object FourOfAKind {
 
 
 case class FullHouse(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
-  private val groupedBy = cards.groupBy {c => c.value.value}
+  private val groupedBy = cards.groupBy {c => c.value}
 
   private val cards2 = groupedBy.values.toSeq(1)
 
   override def rank(that: PokerHand): Option[PokerHand] = {
-    isFullHouse(that.cards) match {
-      case true => {
-        val x = this
-        val y: FullHouse = that.asInstanceOf[FullHouse]
-
-        x.cards2(0) > y.cards2(0) match {
-          case true => Option(that)
-          case false => None
-        }
-      }
-
-      case false => {
-        that match {
-          case a: FourOfAKind => Option(that)
-          case _ => None
+    that match {
+      case a: StraightFlush => Option(that)
+      case b: FourOfAKind => Option(that)
+      case c: FullHouse => {
+        this > c match {
+          case true => Option(this)
+          case false => {
+            c > this match {
+              case true => Option(c)
+              case false => None
+            }
+          }
         }
       }
     }
@@ -199,7 +196,7 @@ object FullHouse {
   }
 
   def isFullHouse(cards: Seq[Card]): Boolean = {
-    val groupedBy = cards.groupBy(c => c.value.value)
+    val groupedBy = cards.groupBy(c => c.value)
 
     groupedBy.size == 2 match {
       case true => {
@@ -221,8 +218,11 @@ case class Flush(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card
   extends PokerHand(card1, card2, card3, card4, card5) {
   override def rank(that: PokerHand): Option[PokerHand] = {
     that match {
-      case a: FullHouse => Option(a)
+      case a: StraightFlush => Option(a)
       case b: FourOfAKind => Option(b)
+      case c: FullHouse => Option(c)
+      case d: Flush => Same(this, d).value
+      case e: Straight => Option(this)
       case _ => None
     }
   }
@@ -241,7 +241,15 @@ object Flush {
 
 
 case class Straight(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
-  override def rank(that: PokerHand): Option[PokerHand] = ???
+  override def rank(that: PokerHand): Option[PokerHand] = {
+    that match {
+      case a: StraightFlush => Option(that)
+      case b: FourOfAKind => Option(that)
+      case c: FullHouse => Option(that)
+      case d: Flush => Option(that)
+      case e: Straight => Same(this, that).value
+    }
+  }
 }
 
 object Straight {
@@ -286,6 +294,19 @@ object HighCard {
     cards.size == 5 match {
       case true => Option(HighCard(cards.head, cards(1), cards(2), cards(3), cards(4)))
       case false => None
+    }
+  }
+}
+
+
+case class Same[T <: PokerHand](handA: T, handB: T) {
+  val value: Option[T] = {
+    handA > handB match {
+      case true => Option(handA)
+      case false => handB > handA match {
+        case true => Option(handB)
+        case false => None
+      }
     }
   }
 }
