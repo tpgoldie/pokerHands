@@ -208,13 +208,34 @@ object Straight {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
     isStraight(cards) match {
       case true => Option(Straight(cards(0), cards(1), cards(2), cards(3), cards(4)))
-      case false => HighCard(cards)
+      case false => ThreeOfAKind(cards)
     }
   }
 
   def isStraight(cards: Seq[Card]): Boolean = {
     val value = Cards(cards)
     value.isSequential && !value.sameSuits
+  }
+}
+
+
+case class ThreeOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
+  override def rank(that: PokerHand): Option[PokerHand] = ???
+}
+
+
+object ThreeOfAKind {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
+    isThreeOfAKind(cards) match {
+      case true => Option(ThreeOfAKind(cards(0), cards(1), cards(2), cards(3), cards(4)))
+      case false => HighCard(cards)
+    }
+  }
+
+  def isThreeOfAKind(cards: Seq[Card]): Boolean = {
+    val groupedBy = cards.groupBy(card => card.value)
+
+    groupedBy.values.filter(p => p.size == 3).flatten.nonEmpty
   }
 }
 
