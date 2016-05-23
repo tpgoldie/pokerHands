@@ -70,11 +70,17 @@ object StraightFlush {
 case class FourOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card)
   extends PokerHand(card1, card2, card3, card4, card5) {
 
-  override def >(that: Hand): Boolean = {
-    val A = this.cards.sortWith(_ > _)
-    val B = that.cards.sortWith(_ > _)
+  override def >[T <: Hand](that: T): Boolean = {
+    that match {
+      case a: FourOfAKind => {
+        val A = this.cards.sortWith(_ > _)
+        val B = that.cards.sortWith(_ > _)
 
-    A.head > B.head
+        A.head > B.head
+      }
+
+      case _ => false
+    }
   }
 
   override def canEqual(that: Any): Boolean = that.isInstanceOf[FourOfAKind]
@@ -200,6 +206,7 @@ case class Straight(card1: Card, card2: Card, card3: Card, card4: Card, card5: C
       case c: FullHouse => Option(that)
       case d: Flush => Option(that)
       case e: Straight => Same(this, that).value
+      case _ => Option(this)
     }
   }
 }
@@ -220,7 +227,32 @@ object Straight {
 
 
 case class ThreeOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
-  override def rank(that: PokerHand): Option[PokerHand] = ???
+  override def rank(that: PokerHand): Option[PokerHand] = {
+    that match {
+      case a: StraightFlush => Option(that)
+      case b: FourOfAKind => Option(that)
+      case c: FullHouse => Option(that)
+      case d: Flush => Option(that)
+      case e: Straight => Option(that)
+      case f: ThreeOfAKind => Same(this, that).value
+      case _ => Option(that)
+    }
+  }
+
+  override def >[T <: Hand](that: T): Boolean = {
+    that match {
+      case a: ThreeOfAKind => {
+        val groupedByA = this.cards.groupBy(card => card.value)
+        val groupedByB = that.cards.groupBy(card => card.value)
+
+        val A = groupedByA.values.filter(p => p.size == 3).flatten.toSeq(0)
+        val B = groupedByB.values.filter(p => p.size == 3).flatten.toSeq(0)
+        A > B
+      }
+
+      case _ => false
+    }
+  }
 }
 
 

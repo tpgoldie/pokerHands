@@ -3,7 +3,7 @@ package com.tpg.ph
 import scala.util.Try
 
 abstract class Hand(val cards: Seq[Card]) {
-  def >(that: Hand): Boolean = {
+  def >[T <: Hand](that: T): Boolean = {
     val v1 = this.cards.sortWith(_ > _)(0)
     val v2 = that.cards.sortWith(_ > _)(0)
 
