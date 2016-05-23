@@ -1,22 +1,26 @@
 package com.tpg.ph
 
-sealed trait Suit {
+sealed abstract class Suit(val index: Int, val name: String) {
+  override def toString: String = name
 }
 
-case object Hearts extends Suit {
-  override def toString: String = "Hearts"
+object Suit {
+  def apply(value: Int): Option[Suit] = value match {
+    case Hearts.index => Option(Hearts)
+    case Clubs.index => Option(Clubs)
+    case Diamonds.index => Option(Diamonds)
+    case Spades.index => Option(Spades)
+    case _ => None
+  }
 }
 
-case object Clubs extends Suit {
-  override def toString: String = "Clubs"
-}
+case object Hearts extends Suit(1, "Hearts")
 
-case object Diamonds extends Suit {
-  override def toString: String = "Diamonds"
-}
+case object Clubs extends Suit(2, "Clubs")
 
-case object Spades extends Suit {
-  override def toString: String = "Spades"
-}
+case object Diamonds extends Suit(3, "Diamonds")
+
+case object Spades extends Suit(4, "Spades")
+
 
 

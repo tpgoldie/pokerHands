@@ -28,7 +28,6 @@ class FullHouseSpec extends HandSpec {
       val B: Option[PokerHand] = FullHouse(cards3 ++ cards4)
 
       assertRanking(A, B, A)
-      assertRanking(B, A, A)
     }
 
     it("ranks lower than a four of a kind") {
@@ -39,7 +38,32 @@ class FullHouseSpec extends HandSpec {
       val B: Option[PokerHand] = FullHouse(cards3 ++ cards4)
 
       assertRanking(A, B, A)
-      assertRanking(B, A, A)
+    }
+
+    it("ranking with another equal full house hand is undefined") {
+      val A: Option[PokerHand] = FullHouse(cards1 ++ cards2)
+
+      assertUndefined(A, A)
+    }
+
+    it("ranks higher than a flush") {
+      val cards3 = Seq(Hearts, Diamonds, Spades) map { value => Card(Five, value) }
+      val cards4 = Seq(Diamonds, Clubs) map { value => Card(Four, value) }
+
+      val A: Option[PokerHand] = Flush(Seq(Two, Four, Six, Eight, King) map { value => Card(value, Clubs) })
+      val B: Option[PokerHand] = FullHouse(cards3 ++ cards4)
+
+      assertRanking(B, A, B)
+    }
+
+    it("ranks higher than a straight") {
+      val pairs = (Two to Six) zip Seq(Hearts, Diamonds, Spades, Clubs, Clubs)
+      val cards = pairs map { p => Card(p._1, p._2) }
+
+      val A: Option[PokerHand] = Straight(cards)
+      val B: Option[PokerHand] = FullHouse(cards1 ++ cards2)
+
+      assertRanking(A, B, B)
     }
   }
 }
