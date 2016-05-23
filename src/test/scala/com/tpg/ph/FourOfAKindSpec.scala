@@ -25,7 +25,7 @@ class FourOfAKindSpec extends HandSpec {
     it("rank undefined if the value of the 4 cards are the same") {
       val A: Option[PokerHand] = FourOfAKind(suits.map(value => Card(Two, value)) ++ Seq(Card(Five, Diamonds)))
 
-      assertRanking(A, A, None)
+      assertUndefined(A, A)
     }
 
     it("ranks lower than a straight flush") {
@@ -35,12 +35,27 @@ class FourOfAKindSpec extends HandSpec {
       assertRanking(B, A, A)
     }
 
-    it("ranks higher than a three of a kind") {
+    it("ranks higher than a full house") {
       val cards1 = Two to Four map { v => Card(v, Hearts)}
       val cards2 = Seq(Eight, Nine) map { v => Card(v, Diamonds) }
 
       val A: Option[PokerHand] = FullHouse(cards1 ++ cards2)
-      val B: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Three, Hearts)))
+      val B: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
+
+      assertRanking(B, A, B)
+    }
+
+    it("ranks higher than a flush") {
+      val A: Option[PokerHand] = Flush((Seq(Two, Three, Four, Seven, Nine)) map { v => Card(v, Hearts) })
+      val B: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
+
+      assertRanking(B, A, B)
+    }
+
+    it("ranks higher than a straight") {
+      val A: Option[PokerHand] = Straight(Seq(Card(Two, Hearts), Card(Three, Hearts), Card(Four, Diamonds),
+        Card(Seven, Clubs), Card(Nine, Clubs)))
+      val B: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
 
       assertRanking(B, A, B)
     }
