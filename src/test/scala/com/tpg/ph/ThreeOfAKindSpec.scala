@@ -61,5 +61,11 @@ class ThreeOfAKindSpec extends HandSpec {
 
       assertRanking(A, B, B)
     }
+
+    it("ranks an equal valued three of a kind as undefined") {
+      val A: Option[PokerHand] = ThreeOfAKind(cards)
+
+      assertUndefined(A, A)
+    }
   }
 }

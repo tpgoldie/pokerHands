@@ -42,6 +42,16 @@ class StraightSpec extends HandSpec {
       assertRanking(A, B, B)
     }
 
+    it("ranks higher than a three of a kind") {
+      val A: Option[PokerHand] = Straight(cards)
+
+      val cards2 = Seq(Clubs, Diamonds, Spades).map { suit => Card(Four, suit)} ++ Seq(Card(Seven, Diamonds), Card(Nine, Hearts))
+
+      val B: Option[PokerHand] = ThreeOfAKind(cards2)
+
+      assertRanking(A, B, A)
+    }
+
     it("ranks with another straight by the highest value") {
       val A: Option[PokerHand] = Straight(cards)
 

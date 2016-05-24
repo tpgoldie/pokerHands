@@ -59,5 +59,14 @@ class FourOfAKindSpec extends HandSpec {
 
       assertRanking(B, A, B)
     }
+
+    it("ranks higher than a three of a kind") {
+      val cards = Seq(Clubs, Diamonds, Spades).map { suit => Card(Four, suit)} ++ Seq(Card(Seven, Diamonds), Card(Nine, Hearts))
+
+      val A: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
+      val B: Option[PokerHand] = ThreeOfAKind(cards)
+
+      assertRanking(B, A, A)
+    }
   }
 }

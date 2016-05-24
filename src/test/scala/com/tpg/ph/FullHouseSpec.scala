@@ -65,5 +65,13 @@ class FullHouseSpec extends HandSpec {
 
       assertRanking(A, B, B)
     }
+    it("ranks higher than a three of a kind") {
+      val cards = Seq(Clubs, Diamonds, Spades).map { suit => Card(Four, suit)} ++ Seq(Card(Seven, Diamonds), Card(Nine, Hearts))
+
+      val A: Option[PokerHand] = FullHouse(cards1 ++ cards2)
+      val B: Option[PokerHand] = ThreeOfAKind(cards)
+
+      assertRanking(A, B, A)
+    }
   }
 }
