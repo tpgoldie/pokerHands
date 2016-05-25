@@ -5,10 +5,10 @@ class HighCardSpec extends HandSpec {
     describe("ranks hands which do not fit any higher category") {
       describe("by the value of their highest card") {
         it("should rank A > B") {
-          val A: PokerHand = PokerHand(Card(Two, Hearts), Card(Four, Clubs), Card(Five, Spades), Card(Seven, Spades), Card(Eight, Diamonds)).get
-          val B: PokerHand = PokerHand(Card(Three, Clubs), Card(Five, Clubs), Card(Six, Diamonds), Card(Six, Hearts), Card(Seven, Clubs)).get
+          val A = PokerHand(Card(Two, Hearts), Card(Four, Clubs), Card(Five, Spades), Card(Seven, Spades), Card(Eight, Diamonds)).get
+          val B = PokerHand(Card(Three, Clubs), Card(Five, Clubs), Card(Six, Diamonds), Card(Six, Hearts), Card(Seven, Clubs)).get
 
-          A.rank(B) map { result => result should be(A) }
+          assertRanking(Option(A), Option(B), Option(A))
         }
       }
 
@@ -17,7 +17,7 @@ class HighCardSpec extends HandSpec {
           val A: PokerHand = PokerHand(Card(Two, Hearts), Card(Four, Clubs), Card(Five, Spades), Card(Six, Spades), Card(Eight, Diamonds)).get
           val B: PokerHand = PokerHand(Card(Three, Clubs), Card(Five, Clubs), Card(Six, Diamonds), Card(Seven, Hearts), Card(Eight, Clubs)).get
 
-          A.rank(B) map { result => result should be(B) }
+          assertRanking(Option(A), Option(B), Option(B))
         }
       }
 

@@ -274,9 +274,9 @@ object ThreeOfAKind {
 
 case class HighCard(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
   override def rank(that: PokerHand): Option[PokerHand] = {
-    this.cards.size == that.cards.size match {
-      case true => highestValuedCard(that, 0)
-      case false => None
+    that match {
+      case a: HighCard => highestValuedCard(that, 0)
+      case _ => Option(that)
     }
   }
 }
