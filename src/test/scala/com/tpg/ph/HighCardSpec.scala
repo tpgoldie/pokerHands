@@ -1,7 +1,7 @@
 package com.tpg.ph
 
 class HighCardSpec extends HandSpec {
-  describe("A high card ranking") {
+  describe("A high card") {
     describe("ranks hands which do not fit any higher category") {
       describe("by the value of their highest card") {
         it("should rank A > B") {

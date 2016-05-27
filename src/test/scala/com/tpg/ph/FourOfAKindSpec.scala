@@ -55,7 +55,8 @@ class FourOfAKindSpec extends HandSpec {
     it("ranks higher than a straight") {
       val A: Option[PokerHand] = Straight(Seq(Card(Two, Hearts), Card(Three, Hearts), Card(Four, Diamonds),
         Card(Seven, Clubs), Card(Nine, Clubs)))
-      val B: Option[PokerHand] = FourOfAKind(suits.map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
+      val B: Option[PokerHand] = FourOfAKind(Seq(Diamonds, Spades, Hearts, Clubs)
+        .map(s => Card(Two, s)) ++ Seq(Card(Seven, Hearts)))
 
       assertRanking(B, A, B)
     }

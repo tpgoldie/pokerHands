@@ -260,7 +260,7 @@ object ThreeOfAKind {
   def apply(cards: Seq[Card]): Option[PokerHand] = {
     isThreeOfAKind(cards) match {
       case true => Option(ThreeOfAKind(cards(0), cards(1), cards(2), cards(3), cards(4)))
-      case false => HighCard(cards)
+      case false => TwoPairs(cards)
     }
   }
 
@@ -271,6 +271,35 @@ object ThreeOfAKind {
   }
 }
 
+case class TwoPairs(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
+  override def rank(that: PokerHand): Option[PokerHand] = {
+    that match {
+      case a: StraightFlush => Option(that)
+      case b: FourOfAKind => Option(that)
+      case c: FullHouse => Option(that)
+      case d: Flush => Option(that)
+      case e: Straight => Option(that)
+      case f: ThreeOfAKind => Option(that)
+    }
+  }
+}
+
+
+object TwoPairs {
+  def apply(cards: Seq[Card]): Option[PokerHand] = {
+    isTwoPairs(cards) match {
+      case true => Option(TwoPairs(cards(0), cards(1), cards(2), cards(3), cards(4)))
+      case false => HighCard(cards)
+    }
+  }
+
+  def isTwoPairs(cards: Seq[Card]): Boolean = {
+    val groupedBy = cards.groupBy(card => card.value)
+
+    val sizes = groupedBy.values.filter(p => p.size == 2).map {p => p.size}
+    sizes == Seq(2, 2)
+  }
+}
 
 case class HighCard(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
   override def rank(that: PokerHand): Option[PokerHand] = {
