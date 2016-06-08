@@ -235,7 +235,7 @@ case class ThreeOfAKind(card1: Card, card2: Card, card3: Card, card4: Card, card
       case d: Flush => Option(that)
       case e: Straight => Option(that)
       case f: ThreeOfAKind => Same(this, that).value
-      case _ => Option(that)
+      case _ => Option(this)
     }
   }
 
@@ -272,6 +272,8 @@ object ThreeOfAKind {
 }
 
 case class TwoPairs(card1: Card, card2: Card, card3: Card, card4: Card, card5: Card) extends PokerHand(card1, card2, card3, card4, card5) {
+  lazy val highestPair = cards.groupBy(c => c.value.value).values.filter(f => f.size == 2).map(g => g(0)).toSeq.sortWith(_ > _)
+
   override def rank(that: PokerHand): Option[PokerHand] = {
     that match {
       case a: StraightFlush => Option(that)
@@ -280,6 +282,19 @@ case class TwoPairs(card1: Card, card2: Card, card3: Card, card4: Card, card5: C
       case d: Flush => Option(that)
       case e: Straight => Option(that)
       case f: ThreeOfAKind => Option(that)
+      case g: TwoPairs => Same(this, that).value
+      case _ => Option(this)
+    }
+  }
+
+  override def >[T <: Hand](that: T): Boolean = {
+    that match {
+      case other: TwoPairs => HighestPair(this, other).value match {
+        case Some(x) => x == this
+        case None => false
+      }
+
+      case _ => false
     }
   }
 }
