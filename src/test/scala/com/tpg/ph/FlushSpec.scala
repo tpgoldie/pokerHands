@@ -70,5 +70,15 @@ class FlushSpec extends HandSpec {
 
       assertRanking(A, B, A)
     }
+
+    it("ranks higher than a three of a kind") {
+      val A: Option[PokerHand] = Flush(cards)
+
+      val cards2 = Seq(Clubs, Diamonds, Spades).map { suit => Card(Four, suit)} ++ Seq(Card(Seven, Diamonds), Card(Nine, Hearts))
+
+      val B: Option[PokerHand] = ThreeOfAKind(cards2)
+
+      assertRanking(A, B, A)
+    }
   }
 }

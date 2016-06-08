@@ -5,6 +5,14 @@ sealed abstract class Suit(val index: Int, val name: String) {
 }
 
 object Suit {
+  def apply(value: Char): Option[Suit] = value match {
+    case 'S' => Option(Spades)
+    case 'H' => Option(Hearts)
+    case 'D' => Option(Diamonds)
+    case 'C' => Option(Clubs)
+    case _ => None
+  }
+
   def apply(value: Int): Option[Suit] = value match {
     case Hearts.index => Option(Hearts)
     case Clubs.index => Option(Clubs)

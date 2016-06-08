@@ -61,5 +61,20 @@ class ThreeOfAKindSpec extends HandSpec {
 
       assertRanking(A, B, B)
     }
+
+    it("ranks an equal valued three of a kind as undefined") {
+      val A = ThreeOfAKind(cards)
+
+      assertUndefined(A, A)
+    }
+
+    it("ranks higher than two pairs") {
+      val A = ThreeOfAKind(cards)
+
+      val cards2 = Seq(Card(Two, Diamonds), Card(Two, Clubs), Card(Three, Hearts), Card(Three, Diamonds), Card(Nine, Spades))
+      val B = TwoPairs(cards2)
+
+      assertRanking(A, B, A)
+    }
   }
 }

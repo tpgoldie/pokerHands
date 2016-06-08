@@ -22,6 +22,16 @@ case class Card(val value: CardValue, val suit: Suit) {
 }
 
 object Card {
+  def apply(value: String): Option[Card] = {
+    val cv = CardValue(value(0))
+    val suit = Suit(value(1))
+
+    cv == None || suit == None match {
+      case false => Option(Card(cv.get, suit.get))
+      case true => None
+    }
+  }
+
   def apply(value: Int, suit: Suit): Option[Card] = {
     val cv: Option[CardValue] = CardValue(value)
     cv map { x => Card(x, suit) }

@@ -31,6 +31,25 @@ object CardValue {
     case anythingElse => "n/a"
   }
 
+  def apply(value: Char): Option[CardValue] = {
+    value match {
+      case '2' => Option(Two)
+      case '3' => Option(Three)
+      case '4' => Option(Four)
+      case '5' => Option(Five)
+      case '6' => Option(Six)
+      case '7' => Option(Seven)
+      case '8' => Option(Eight)
+      case '9' => Option(Nine)
+      case 'T' => Option(Ten)
+      case 'J' => Option(Jack)
+      case 'Q' => Option(Queen)
+      case 'K' => Option(King)
+      case 'A' => Option(Ace)
+      case _ => None
+    }
+  }
+
   def apply(value: Int): Option[CardValue] = {
     value match {
       case 2 => Some(Two)

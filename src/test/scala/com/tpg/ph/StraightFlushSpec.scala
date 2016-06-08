@@ -46,6 +46,16 @@ class StraightFlushSpec extends HandSpec {
       assertRanking(A, B, A)
     }
 
+    it("ranks higher than a three of a kind") {
+      val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map { v => Card(v, Hearts) })
+
+      val cards = Seq(Clubs, Diamonds, Spades).map { suit => Card(Four, suit)} ++ Seq(Card(Seven, Diamonds), Card(Nine, Hearts))
+
+      val B: Option[PokerHand] = ThreeOfAKind(cards)
+
+      assertRanking(A, B, A)
+    }
+
     it("ranks higher than a high card hand") {
       val A: Option[PokerHand] = StraightFlush(Seq(Two, Three, Four, Five, Six) map {value => Card(value, Hearts) })
       val B: Option[PokerHand] = HighCard(Seq(Four, Five, Ten, Seven, Eight) map { value => Card(value, Diamonds) })
